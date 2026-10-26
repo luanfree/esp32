@@ -43,6 +43,9 @@
 #elif CONFIG_OLED_SH1106_128X64
 #define DISPLAY_HEIGHT  64
 #define SH1106
+#elif CONFIG_OLED_SSD1106_128X64
+#define DISPLAY_HEIGHT  64
+#define SH1106    // SSD1106 和 SH1106 芯片相同,共用 esp_lcd_panel_sh1106 驱动
 #else
 #error "OLED display type is not selected"
 #endif
