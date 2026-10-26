@@ -1,0 +1,56 @@
+#ifndef _BOARD_CONFIG_H_
+#define _BOARD_CONFIG_H_
+
+#include <driver/gpio.h>
+
+// ES8311 Codec 需要输入和输出采样率相同
+#define AUDIO_INPUT_SAMPLE_RATE  24000
+#define AUDIO_OUTPUT_SAMPLE_RATE 24000
+
+// I2S 引脚定义 - 连接到 ES8311
+#define AUDIO_I2S_GPIO_MCLK  GPIO_NUM_6
+#define AUDIO_I2S_GPIO_WS    GPIO_NUM_12  // LRCK
+#define AUDIO_I2S_GPIO_BCLK  GPIO_NUM_14  // SCLK
+#define AUDIO_I2S_GPIO_DOUT  GPIO_NUM_13  // ESP32 -> ES8311 DIN (播放)
+#define AUDIO_I2S_GPIO_DIN   GPIO_NUM_11  // ESP32 <- ES8311 DOUT (录音)
+
+// ES8311 I2C 控制引脚
+#define AUDIO_CODEC_I2C_SDA_PIN  GPIO_NUM_5
+#define AUDIO_CODEC_I2C_SCL_PIN  GPIO_NUM_4
+#define AUDIO_CODEC_ES8311_ADDR  ES8311_CODEC_DEFAULT_ADDR
+#define AUDIO_CODEC_PA_PIN       GPIO_NUM_NC  // NS4150B功放,无单独PA控制脚
+
+// OLED 显示屏引脚 (I2C)
+// 如果OLED也用ES8311的I2C引脚,可改为相同的引脚复用同一个I2C总线
+#define DISPLAY_I2C_SDA_PIN  GPIO_NUM_41
+#define DISPLAY_I2C_SCL_PIN  GPIO_NUM_42
+
+// 按键和LED
+#define BUILTIN_LED_GPIO        GPIO_NUM_48
+#define BOOT_BUTTON_GPIO        GPIO_NUM_0
+#define TOUCH_BUTTON_GPIO       GPIO_NUM_47
+#define VOLUME_UP_BUTTON_GPIO   GPIO_NUM_40
+#define VOLUME_DOWN_BUTTON_GPIO GPIO_NUM_39
+
+// OLED 显示屏配置
+#define DISPLAY_WIDTH   128
+
+// OLED 驱动芯片选择 - 根据你的硬件选择
+#if CONFIG_OLED_SSD1306_128X32
+#define DISPLAY_HEIGHT  32
+#elif CONFIG_OLED_SSD1306_128X64
+#define DISPLAY_HEIGHT  64
+#elif CONFIG_OLED_SH1106_128X64
+#define DISPLAY_HEIGHT  64
+#define SH1106
+#else
+#error "OLED display type is not selected"
+#endif
+
+#define DISPLAY_MIRROR_X true
+#define DISPLAY_MIRROR_Y true
+
+// MCP Test: 控制一个灯
+#define LAMP_GPIO GPIO_NUM_18
+
+#endif // _BOARD_CONFIG_H_
