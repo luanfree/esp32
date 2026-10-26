@@ -3,7 +3,7 @@
     "target": "esp32s3",
     "builds": [
         {
-            "name": "bread-compact-wifi-es8311-128x64",
+            "name": "bread-compact-wifi-es8311-ssd1306",
             "sdkconfig_append": [
                 "CONFIG_OLED_SSD1306_128X64=y"
             ]
@@ -12,6 +12,12 @@
             "name": "bread-compact-wifi-es8311-sh1106",
             "sdkconfig_append": [
                 "CONFIG_OLED_SH1106_128X64=y"
+            ]
+        },
+        {
+            "name": "bread-compact-wifi-es8311-ssd1106",
+            "sdkconfig_append": [
+                "CONFIG_OLED_SSD1106_128X64=y"
             ]
         }
     ]
