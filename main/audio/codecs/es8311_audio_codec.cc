@@ -66,8 +66,14 @@ void Es8311AudioCodec::ResetCodec() {
     // recommended by the initialization guide. Normal codec initialization
     // releases the reset and starts the state machine.
     uint8_t reset_value = 0x1F;
-    ESP_ERROR_CHECK(static_cast<esp_err_t>(
-        ctrl_if_->write_reg(ctrl_if_, 0x00, 1, &reset_value, 1)));
+    esp_err_t ret = static_cast<esp_err_t>(
+        ctrl_if_->write_reg(ctrl_if_, 0x00, 1, &reset_value, 1));
+    if (ret != ESP_OK) {
+        // Do not abort the whole firmware when the codec is missing or the I2C
+        // bus is miswired; log it so the device can still boot for diagnosis.
+        ESP_LOGE(TAG, "ES8311 reset write failed (%s), check I2C wiring", esp_err_to_name(ret));
+        return;
+    }
     vTaskDelay(pdMS_TO_TICKS(5));
     ESP_LOGI(TAG, "ES8311 software reset complete");
 }
