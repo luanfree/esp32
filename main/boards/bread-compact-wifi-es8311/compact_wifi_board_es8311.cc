@@ -52,6 +52,12 @@ private:
         };
         ESP_ERROR_CHECK(i2c_new_master_bus(&bus_config, &audio_i2c_bus_));
         ESP_LOGI(TAG, "Audio I2C initialized (SDA=%d, SCL=%d)", AUDIO_CODEC_I2C_SDA_PIN, AUDIO_CODEC_I2C_SCL_PIN);
+        // 扫描确认 ES8311 是否在线(地址 0x18),用于快速定位硬件接线问题
+        if (i2c_master_probe(audio_i2c_bus_, AUDIO_CODEC_ES8311_ADDR, 100) == ESP_OK) {
+            ESP_LOGI(TAG, "ES8311 found on I2C bus (addr=0x%02X)", AUDIO_CODEC_ES8311_ADDR);
+        } else {
+            ESP_LOGE(TAG, "ES8311 NOT found on I2C bus (addr=0x%02X)! Check SDA/SCL wiring and power", AUDIO_CODEC_ES8311_ADDR);
+        }
     }
 
     // 初始化 OLED 显示屏的 I2C 总线
@@ -91,7 +97,17 @@ private:
 
     void InitializeSsd1306Display() {
         i2c_master_bus_handle_t i2c_bus = GetDisplayI2cBus();
-        
+
+        // 扫描确认 OLED 是否在线(常见地址 0x3C / 0x3D),用于快速定位接线问题
+        if (i2c_master_probe(i2c_bus, 0x3C, 100) == ESP_OK) {
+            ESP_LOGI(TAG, "OLED found at I2C addr 0x3C");
+        } else if (i2c_master_probe(i2c_bus, 0x3D, 100) == ESP_OK) {
+            ESP_LOGI(TAG, "OLED found at I2C addr 0x3D");
+        } else {
+            ESP_LOGE(TAG, "OLED NOT found on I2C bus! Check SDA/SCL wiring (DISPLAY_SDA=%d, SCL=%d) and 3.3V power",
+                     DISPLAY_I2C_SDA_PIN, DISPLAY_I2C_SCL_PIN);
+        }
+
         esp_lcd_panel_io_i2c_config_t io_config = {
             .dev_addr = 0x3C,
             .scl_speed_hz = 400 * 1000,
