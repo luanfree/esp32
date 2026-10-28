@@ -38,7 +38,7 @@ private:
     Button volume_down_button_;
 
     // 初始化 ES8311 的 I2C 总线
-    void InitializeAudioI2c() {
+    void InitializeCodecI2c() {
         i2c_master_bus_config_t bus_config = {
             .i2c_port = I2C_NUM_0,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
