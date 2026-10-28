@@ -14,7 +14,8 @@
 #include <driver/i2c_master.h>
 #include <esp_lcd_panel_ops.h>
 #include <esp_lcd_panel_vendor.h>
-
+#include "driver/gpio.h"
+#include "driver/spi_master.h"
 #ifdef SH1106
 #include <esp_lcd_panel_sh1106.h>
 #endif
@@ -24,7 +25,7 @@
 class CompactWifiEs8311Board : public WifiBoard {
 private:
     // ES8311 Audio Codec I2C 总线
-    i2c_master_bus_handle_t audio_i2c_bus_;
+    i2c_master_bus_handle_t codec_i2c_bus_;
     // OLED Display I2C 总线 (如果OLED和ES8311共用I2C,可以合并)
     i2c_master_bus_handle_t display_i2c_bus_;
     
@@ -232,7 +233,7 @@ public:
 
     virtual AudioCodec* GetAudioCodec() override {
         static Es8311AudioCodec audio_codec(
-            audio_i2c_bus_,           // I2C master bus handle
+            codec_i2c_bus_,           // I2C master bus handle
             I2C_NUM_0,                // I2C port (与上面保持一致)
             AUDIO_INPUT_SAMPLE_RATE,  // 输入采样率
             AUDIO_OUTPUT_SAMPLE_RATE, // 输出采样率 (必须等于输入)
